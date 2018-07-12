@@ -2,18 +2,19 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 #include <chrono>
 using namespace std::chrono;
 
-void bubbleSort(std::vector<int> sortThisVector, int size) {
+void bubbleSort(std::vector<int> &sortThisVector, int size) {
 	auto start = high_resolution_clock::now();
 	bool swapped = true;
-	int currentIndexOfArray = 0;
+	int lastSortedData = 0;
 	int temp = 0;
 	while (swapped) {
 		swapped = false;
-		currentIndexOfArray++;
-		for (int i = 0; i<size-currentIndexOfArray; ++i) {
+		lastSortedData++;
+		for (int i = 0; i<size-lastSortedData; ++i) {
 			if (sortThisVector[i]>sortThisVector[i + 1]) {
 				temp = sortThisVector[i];
 				sortThisVector[i] = sortThisVector[i + 1];
@@ -25,20 +26,50 @@ void bubbleSort(std::vector<int> sortThisVector, int size) {
 	}
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
-	std::cout << "Time taken for bubble sort: " << duration.count() << " seconds." << std::endl;
+	std::cout << "Time taken for bubble sort: " << duration.count() << " seconds" << std::endl;
 
-	//used for check
-	/*std::vector<int>::iterator pos;
-	for (pos = sortThisVector.begin(); pos != sortThisVector.end(); ++pos)
-		std::cout << *pos << " " << std::endl;*/
 }
 
-/*void print(std::vector<int> myVec) {
+void print(std::vector<int> myVec) {
 	std::vector<int>::iterator pos;
 	for (pos = myVec.begin(); pos != myVec.end(); ++pos)
 		std::cout << *pos << " " << std::endl;
-}*/
+}
 
+void heapify(std::vector<int> &sortThisVector, int size, int calcParent) {
+	int largest = calcParent;
+	int lIndex = 2 * calcParent + 1;
+	int rIndex = 2 * calcParent + 2;
+
+	if (lIndex < size && sortThisVector[lIndex] > sortThisVector[largest])
+		largest = lIndex;
+	if (rIndex < size && sortThisVector[rIndex] > sortThisVector[largest])
+		largest = rIndex;
+	
+	if (largest != calcParent) {
+		std::swap(sortThisVector[calcParent], sortThisVector[largest]);
+		heapify(sortThisVector, size, largest);
+	}
+}
+
+void heapSort(std::vector<int> &sortThisVector, int size) {
+	std::string sortType = "Heap Sort";
+	auto start = high_resolution_clock::now();
+	for (int i = size / 2 - 1; i >= 0; i--) {
+		heapify(sortThisVector, size, i);
+	}
+
+	for (int i = size - 1; i >= 0; i--) {
+		std::swap(sortThisVector[0], sortThisVector[i]);
+		heapify(sortThisVector, i, 0);
+	}
+
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<seconds>(stop - start);
+	std::cout << "Time taken for heap sort: " << duration.count() << " seconds" << std::endl;
+	
+	
+}
 
 //DON'T FORGET TO CLOSE FILE WHEN YOU'RE DONE IMPLEMENTING SORTING METHODS 
 int main()
@@ -70,9 +101,11 @@ int main()
 	file.close();
 
 	//sort vectors
-	bubbleSort(myVector, count);
+	//bubbleSort(myVector, count);
+	//print(myVector);
+	heapSort(myVector, count);
+	//print(myVector);
 	//myVector.mergeSort();
-	//myVector.heapSort();
 	system("pause");
 
 }
