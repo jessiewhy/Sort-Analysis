@@ -111,7 +111,7 @@ void merge(std::vector<int> &sortThisVector, int low, int mid, int high) {
 }
 
 void mergeSort(std::vector<int> &sortThisVector, int low, int high) {
-	
+	auto start = high_resolution_clock::now();
 	int mid;
 	if (low < high) {
 		mid = low + (high-low) / 2;
@@ -119,6 +119,11 @@ void mergeSort(std::vector<int> &sortThisVector, int low, int high) {
 		mergeSort(sortThisVector, mid + 1, high);
 
 		merge(sortThisVector, low, mid, high);
+	}
+	else {
+		auto stop = high_resolution_clock::now();
+		auto duration = duration_cast<seconds>(stop - start);
+		std::cout << "Time taken for merge sort: " << duration.count() << " seconds" << std::endl;
 	}
 
 	//std::cout << "test" << std::endl;
@@ -164,11 +169,7 @@ int main()
 	//print(myVector);
 	//heapSort(myVector, count);
 	//print(myVector);
-	auto start = high_resolution_clock::now();
 	mergeSort(myVector, 0, count - 1);
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<seconds>(stop - start);
-	std::cout << "Time taken for merge sort: " << duration.count() << " seconds" << std::endl;
 	//print(myVector);
 	system("pause");
 
